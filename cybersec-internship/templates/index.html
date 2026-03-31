@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Cyber Security Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+
+<h1>🔐 Cyber Security Monitoring System</h1>
+<p style="text-align:center;">Tamper Detection + Secure Sandbox Execution</p>
+
+<div class="container">
+
+    <!-- Add Log -->
+    <div class="card">
+        <h2>Add Log</h2>
+        <form method="POST">
+            <input name="event" placeholder="Event" required>
+            <input name="description" placeholder="Description" required>
+            <button name="action" value="add_log">Add Log</button>
+        </form>
+    </div>
+
+    <!-- Verify Logs -->
+    <div class="card">
+        <h2>Verify Logs</h2>
+        <form method="POST">
+            <button name="action" value="verify">Check Integrity</button>
+        </form>
+
+        {% for issue in issues %}
+            {% if "❌" in issue %}
+                <p class="error">{{ issue }}</p>
+            {% else %}
+                <p class="success">{{ issue }}</p>
+            {% endif %}
+        {% endfor %}
+    </div>
+
+    <!-- Sandbox -->
+    <div class="card">
+        <h2>Sandbox Execution</h2>
+        <form method="POST">
+            <textarea name="code" rows="6" placeholder="Enter Python code..."></textarea><br>
+            <button name="action" value="run_code">Execute</button>
+        </form>
+
+        <h3>Output:</h3>
+
+        {% if "❌" in message %}
+            <p class="error output">{{ message }}</p>
+        {% elif "✅" in message %}
+            <p class="success output">{{ message }}</p>
+        {% else %}
+            <p class="output">{{ message }}</p>
+        {% endif %}
+    </div>
+
+    <!-- Logs -->
+    <div class="card">
+        <h2>Logs</h2>
+        <ul>
+        {% for log in logs %}
+            <li>
+                <strong>Event:</strong> {{ log.event if log.event else log['event'] }} <br>
+                <strong>Description:</strong> {{ log.description if log.description else log['description'] }} <br>
+                <strong>Time:</strong> {{ log.timestamp if log.timestamp else log['timestamp'] }}
+            </li>
+        {% endfor %}
+        </ul>
+    </div>
+
+</div>
+
+</body>
+</html>
